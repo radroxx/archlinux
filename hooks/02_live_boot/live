@@ -1,0 +1,221 @@
+#!/bin/sh
+
+echo "Starting mounts..."
+
+OPTS_DEFAULT='noatime,nodiratime'
+OPTS_TMPFS=${OPTS_DEFAULT}',nodev,nosuid'
+OPTS_SQUASH=${OPTS_DEFAULT}',loop'
+
+LIVE_PREFIX=livearch
+LIVE_PERSIST=
+LIVE_RESET=
+LIVE_TORAM=no
+LIVE_LIMIT=100%
+IS_LIVE=no
+LIVE_TEST_PATH=
+
+for PARAM in $(cat /proc/cmdline)
+do
+	case "${PARAM}" in
+
+		# Раздел для изменений
+		persist=*)
+			LIVE_PERSIST="${PARAM#persist=}"
+			;;
+
+		# Префикс для поиска образов и патчей
+		prefix=*)
+			LIVE_PREFIX="${PARAM#prefix=}"
+			;;
+		
+		# Прямой путь для монтирования squash
+		livetestpath=*)
+			LIVE_TEST_PATH="${PARAM#livetestpath=}"
+			;;
+
+		# Префикс для поиска образов и патчей
+		live)
+			IS_LIVE='yes'
+			;;
+
+		# Откат изменений
+		reset)
+			LIVE_RESET='yes'
+			;;
+
+		# Копирование образов в ОЗУ с возможностью
+		# задания ограничения по размеру файла
+		# дополнительного образа (в мегабайтах)
+		toram|toram=*)
+			LIMIT="${PARAM#toram=}"
+
+			LIVE_TORAM='yes'
+			LIVE_LIMIT="${LIMIT#toram}"
+			;;
+	esac
+done
+
+if [ ${IS_LIVE} == 'no' ]; then
+	exit 0
+fi
+
+
+function resolve_device() {
+	for TRY in 0 1 2 3 4 5 6 7 8 9; do
+		case $1 in
+			UUID=*)
+				test -e /dev/disk/by-uuid/${1#UUID=}           && readlink -f /dev/disk/by-uuid/${1#UUID=}           && return 0
+			;;
+			LABEL=*)
+				test -e /dev/disk/by-label/${1#LABEL=}         && readlink -f /dev/disk/by-label/${1#LABEL=}         && return 0
+			;;
+			PARTUUID=*)
+				test -e /dev/disk/by-partuuid/${1#PARTUUID=}   && readlink -f /dev/disk/by-partuuid/${1#PARTUUID=}   && return 0
+			;;
+			PARTLABEL=*)
+				test -e /dev/disk/by-partlabel/${1#PARTLABEL=} && readlink -f /dev/disk/by-partlabel/${1#PARTLABEL=} && return 0
+			;;
+			*)
+				test -b $1                                     && readlink -f $1                                     && return 0
+			;;
+		esac
+
+		sleep 1
+	done
+
+	return 1
+}
+
+# Монтируем persist
+if [ -d /live-media/persist/metadata ]; then
+	echo "Skip mount persist."
+else
+	mkdir -p /live-media/persist 
+	
+	test -n "${LIVE_PERSIST}" && mount -o ${OPTS_DEFAULT} $(resolve_device ${LIVE_PERSIST}) /live-media/persist/
+	test "${LIVE_RESET}" = 'yes' && find /live-media/persist/ -mindepth 1 -maxdepth 1 -exec rm -Rf {} \;
+	test -z "${LIVE_PERSIST}" && mount -t tmpfs -o ${OPTS_TMPFS},size=${LIVE_LIMIT} tmpfs /live-media/persist/
+	
+	mkdir -p \
+		/live-media/persist/metadata \
+		/live-media/persist/diff \
+		/live-media/persist/disk \
+		/live-media/persist/empty/live-media/persist \
+		/live-media/persist/empty/live-media/disk
+fi
+
+
+# Перемещаем disk
+if [ -d /live-media/disk/${LIVE_PREFIX} ]; then
+	echo "Skip remount disk."
+else
+	if [ -d /sysroot/${LIVE_PREFIX} ]; then
+		mkdir -p /live-media/disk
+		mount -o bind /sysroot /live-media/disk
+		umount /sysroot
+	else
+		echo "Live arch prefix ${LIVE_PREFIX} not found."
+		test -z "${LIVE_TEST_PATH}" && exit 0
+	fi
+fi
+
+
+# Проверяем что система еще не подключена
+if [ -f /sysroot/etc/os-release ]; then
+	echo "Skip mount owerlay."
+	echo "Finish mounts..."
+	exit 0
+fi
+
+
+if [ "${LIVE_TORAM}" == "yes" ]; then
+	mkdir -p /live-media/persist/disk/${LIVE_PREFIX}
+	find /live-media/disk/${LIVE_PREFIX} -type f -name "*.squash" -printf '%f\n' | xargs -n1 -I {} cp /live-media/disk/${LIVE_PREFIX}/{} /live-media/persist/disk/${LIVE_PREFIX}/{}
+	echo "Done"
+fi
+
+
+# Монтируем squashfs
+echo "Mount squashfs files."
+I=0 
+LOWERDIR=/live-media/persist/empty
+for IMAGE in $(find /live-media/persist/disk/${LIVE_PREFIX} -type f -name "*.squash" | sort); do
+	echo "Mounting ${I} ${IMAGE} ..."
+	
+	# Mounting code
+	mkdir -p /live-media/roots/${I}
+	umount /live-media/roots/${I} || true
+	mount -t squashfs -o ro,${OPTS_SQUASH} ${IMAGE} /live-media/roots/${I}
+	
+	LOWERDIR=${LOWERDIR}:/live-media/roots/${I}
+	
+	echo "Done."
+	I=$(( I+1 ))
+done
+
+if [ "${LIVE_TORAM}" == "no" ]; then
+	for IMAGE in $(find /live-media/disk/${LIVE_PREFIX} -type f -name "*.squash" | sort); do
+		echo "Mounting ${I} ${IMAGE} ..."
+		
+		# Mounting code
+		mkdir -p /live-media/roots/${I}
+		umount /live-media/roots/${I} || true
+		mount -t squashfs -o ro,${OPTS_SQUASH} ${IMAGE} /live-media/roots/${I}
+		
+		LOWERDIR=${LOWERDIR}:/live-media/roots/${I}
+		
+		echo "Done."
+		I=$(( I+1 ))
+	done
+fi
+
+if [ -n "${LIVE_TEST_PATH}" ]; then
+	echo "Mounting ${I} ${LIVE_TEST_PATH} ..."
+		
+	# Mounting code
+	mkdir -p /live-media/roots/${I}
+	umount /live-media/roots/${I} || true
+	mount -t squashfs -o ro,${OPTS_SQUASH} ${LIVE_TEST_PATH} /live-media/roots/${I}
+	
+	LOWERDIR=${LOWERDIR}:/live-media/roots/${I}
+	
+	echo "Done."
+fi
+
+# Монтируем overlay
+
+mount -t overlay -o ${OPTS_DEFAULT},upperdir=/live-media/persist/diff,workdir=/live-media/persist/metadata,lowerdir=${LOWERDIR} overlay /sysroot
+
+mount -o bind /live-media/persist /sysroot/live-media/persist
+mount -o bind /live-media/disk /sysroot/live-media/disk
+
+
+# Применение патчей
+if [ -f /sysroot/etc/os-patched ]; then
+	echo "Skip patch system."
+	echo "Finish mounts..."
+	exit 0
+fi
+
+echo "Applay patch..."
+for IMAGE in $(find /sysroot/live-media/disk/${LIVE_PREFIX} -type f -name "*.tar.gz" | sort); do
+	echo "Applay ${IMAGE} patch ..."
+	tar -xzf ${IMAGE} -C /sysroot
+	echo "Done."
+done
+
+for IMAGE in $(find /sysroot/live-media/disk/${LIVE_PREFIX} -type d -name "*patch*" | sort); do
+	echo "Applay ${IMAGE} patch ..."
+	rsync -a -r -v ${IMAGE}/* /sysroot
+	echo "Done."
+done
+
+touch /sysroot/etc/os-patched
+
+if [ -f /sysroot/usr/local/livearch/preboot ]; then
+	chroot /sysroot/ /usr/local/livearch/preboot
+fi
+
+echo "Finish mounts..."
+
+exit 0

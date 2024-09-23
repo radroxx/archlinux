@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# add password to root
+echo "root:toor" | chpasswd
+
+# add default user admin:admin
+/usr/bin/useradd --create-home --password '$y$j9T$ET6WCECVd2I1eFARDOVEl0$VjVX6wHmJ5FNZsoBjEkW0vY9PxGYJaWR4cupaMxuzx0' --groups wheel admin
+
+ln -s ../usr/share/zoneinfo/UTC /etc/localtime
+
+exit 0

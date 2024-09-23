@@ -1,0 +1,35 @@
+* {
+	border: none;
+	border-radius: 10px;
+	color: white;
+	box-shadow: none;
+}
+
+window {
+    border-radius: 10px;
+    background-color: rgba(1,1,1,.5);
+}
+
+list {
+    background-color: #383c4a;
+}
+
+list row:selected {
+    background: #7c818c;
+}
+
+list row:hover {
+    background: #7c818c;
+}
+
+entry {
+    background-color: #383c4a;
+}
+
+button {
+    background: #383c4a;
+}
+
+button:hover {
+    background: #7c818c;
+}

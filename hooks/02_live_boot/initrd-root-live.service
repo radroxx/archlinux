@@ -1,0 +1,13 @@
+[Unit]
+Description=Mount Live System
+DefaultDependencies=no
+ConditionPathExists=/etc/initrd-release
+OnFailure=emergency.target
+OnFailureJobMode=replace-irreversibly
+AllowIsolate=yes
+After=initrd-root-device.target sysroot.mount
+Before=shutdown.target initrd-parse-etc.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/livearch/live

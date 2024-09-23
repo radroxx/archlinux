@@ -1,0 +1,6 @@
+dist/
+root/
+cache/
+**/*.zst
+**/*.vsix
+00_patch.tar

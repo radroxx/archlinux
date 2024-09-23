@@ -1,0 +1,21 @@
+#!/usr/bin/sh
+
+build() {
+	add_file /usr/local/livearch/live
+	add_symlink /usr/lib/systemd/system/sysroot.mount.requires/initrd-root-live.service
+
+	add_binary cp
+	add_binary find
+	add_binary rsync
+	add_binary xargs
+
+	add_binary btrfs
+
+	add_module atkbd
+	add_module ext4
+	add_module dm_crypt
+	add_module squashfs
+	add_module overlay
+
+	add_systemd_unit initrd-root-live.service
+}

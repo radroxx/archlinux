@@ -1,0 +1,101 @@
+* {
+	border: none;
+	border-radius: 0;
+	/* `otf-font-awesome` is required to be installed for icons */
+	font-family: Liberation Mono;
+	min-height: 20px;
+	font-size: 14px;
+}
+
+window#waybar {
+	background: transparent;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+/* https://github.com/Alexays/Waybar/wiki/FAQ#the-workspace-buttons-have-a-strange-hover-effect */
+#taskbar button {
+	border-radius: 10px;
+	color: white;
+}
+
+#taskbar button:hover {
+	transition: none;
+	box-shadow: inherit;
+	text-shadow: inherit;
+	border-radius: 10px;
+	color: #383c4a;
+	background: #7c818c;
+}
+
+#taskbar button.active {
+	color: white;
+	background: #7c818c;
+}
+
+#cpu, #memory, #temperature, #battery, #backlight, #network, #pulseaudio, #clock, #tray,
+#custom-menu, #taskbar
+{
+	margin-top: 4px;
+	margin-bottom: 4px;
+	padding-left: 5px;
+	padding-right: 5px;
+	transition: none;
+	color: white;
+	background: #383c4a;
+}
+
+#network, #pulseaudio, #clock, #tray, #custom-menu, #taskbar {
+	margin-right: 4px;
+	margin-left: 4px;
+	border-radius: 10px;
+}
+
+#cpu, #backlight {
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+}
+
+#battery, #temperature {
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	margin-right: 4px;
+}
+
+#temperature.critical {
+	background-color: #eb4d4b;
+}
+
+#battery.charging {
+	color: #ffffff;
+	background-color: #26A65B;
+}
+
+#battery.warning:not(.charging) {
+	background-color: #ffbe61;
+	color: black;
+}
+
+#battery.critical:not(.charging) {
+	background-color: #f53c3c;
+	color: white;
+	animation-name: blink;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+#pulseaudio.muted {
+	background-color: #90b1b1;
+	color: #2a5c45;
+}
+
+@keyframes blink {
+	to {
+		background-color: white;
+		color: black;
+	}
+}

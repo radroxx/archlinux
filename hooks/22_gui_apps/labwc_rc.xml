@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<labwc_config>
+
+	<core>
+		<gap>10</gap>
+	</core>
+
+	<theme>
+		<name>Adapta-Nokto</name>
+		<cornerRadius>8</cornerRadius>
+		<font name="sans" size="10" />
+	</theme>
+
+	<keyboard>
+		<default />
+		<!-- Use a different terminal emulator -->
+
+		<keybind key="W-Space"><action name="Execute" command="fuzzel -b 28343AFF -t B9C2C7FF -s 384449FF -S CFD8DCFF" /></keybind>
+		<keybind key="W-m">
+			<action name="ForEach">
+				<query/>
+				<then><action name="Iconify" /></then>
+			</action>
+		</keybind>
+
+		<keybind key="C-A-t"><action name="Execute" command="terminator" /></keybind>
+		<keybind key="W-Return"><action name="Execute" command="wezterm" /></keybind>
+		<keybind key="C-A-l"><action name="Execute" command="swaylock -K -L -c 000000" /></keybind>
+		<keybind key="XF86_MonBrightnessUp"><action name="Execute" command="brightnessctl set +10%" /></keybind>
+		<keybind key="XF86_MonBrightnessDown"><action name="Execute" command="brightnessctl set 10%-" /></keybind>
+
+		<keybind key="C-Left"><action name="GoToDesktop" to="left" wrap="yes" /></keybind>
+		<keybind key="C-Right"><action name="GoToDesktop" to="right" wrap="yes" /></keybind>
+
+		<keybind key="C-S-Left"><action name="SendToDesktop" to="left" wrap="yes" /></keybind>
+		<keybind key="C-S-Right"><action name="SendToDesktop" to="right" wrap="yes" /></keybind>
+	</keyboard>
+
+	<mouse>
+		<default />
+		<!-- Show a custom menu on desktop right click -->
+		<context name="Root">
+			<mousebind button="Left" action="Press">
+				<action name="ShowMenu" menu="some-custom-menu" />
+			</mousebind>
+		</context>
+	</mouse>
+
+	<desktops>
+		<popupTime>500</popupTime>
+		<names>
+			<name>1</name>
+			<name>2</name>
+			<name>3</name>
+		</names>
+	</desktops>
+
+</labwc_config>
