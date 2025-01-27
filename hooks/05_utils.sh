@@ -19,7 +19,7 @@ function install_pkgs_list()
     pkgs="$pkgs libappimage"
 
     # tui
-    pkgs="$pkgs vim vifm tmux mc neofetch links mutt hexedit minicom"
+    pkgs="$pkgs vim vifm tmux mc neofetch links mutt hexedit minicom fzf"
 
     # mail tools
     pkgs="$pkgs nullmailer swaks offlineimap msmtp"

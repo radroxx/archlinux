@@ -3,6 +3,8 @@ function install_pkgs_list(){
     # Wayland
     pkgs="$pkgs grim slurp wf-recorder waybar nwg-menu fuzzel kanshi gammastep brightnessctl wl-clipboard"
     pkgs="$pkgs wtype wev kwayland5"
+    # wayland vnc server
+    pkgs="$pkgs wayvnc wlr-randr"
     
     # Theme
     pkgs="$pkgs adapta-gtk-theme"

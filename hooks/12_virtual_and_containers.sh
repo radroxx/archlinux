@@ -4,7 +4,7 @@ function install_pkgs_list()
     pkgs="$pkgs docker docker-compose"
 
     # qemu
-    pkgs="$pkgs qemu-emulators-full ovmf"
+    pkgs="$pkgs qemu-emulators-full ovmf swtpm"
 
     # gui
     #pkgs="$pkgs qemu-desktop"

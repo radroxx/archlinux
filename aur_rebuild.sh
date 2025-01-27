@@ -86,6 +86,9 @@ build firefox-extension-dont-track-me-google
 build python-yandex-music-api
 build rhythmbox-plugin-yandex-music
 
+# games
+build moonlight-qt-git
+
 # programing lang servers and debug
 build cs-script
 build netcoredbg
@@ -117,7 +120,6 @@ gpg --recv-keys BF38D4D02A328DFF
 build stellarium-bin
 build jfrog-cli-bin
 build aqemu
-build qtemu-git
 EOF
 
 exit 0
