@@ -3,6 +3,8 @@ pkgs="squashfs-tools"
 
 hooks=$(ls ${HOOKS_DIR}/ | grep "\.sh$")
 
+set -e
+
 # Get pkgs list
 for hook in ${hooks}
 do

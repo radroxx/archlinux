@@ -14,6 +14,9 @@ function install_pkgs_list()
     # kuberneties
     pkgs="$pkgs k9s kubectl helm krew"
 
+    # loki & grafana
+    pkgs="$pkgs logcli"
+
     # android dev
     pkgs="$pkgs android-tools android-udev"
 

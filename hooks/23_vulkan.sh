@@ -6,5 +6,5 @@ function install_pkgs_list(){
     
     # mesa
     pkgs="$pkgs mesa libva-mesa-driver mesa-vdpau glu lib32-mesa lib32-libva-mesa-driver lib32-mesa-vdpau lib32-glu"
-    pkgs="$pkgs mesa-demos libvdpau-va-gl libva-vdpau-driver lib32-libva-vdpau-driver lib32-mesa-vdpau"
+    pkgs="$pkgs mesa-demos libvdpau-va-gl lib32-mesa-vdpau"
 }

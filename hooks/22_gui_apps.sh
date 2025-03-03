@@ -62,6 +62,9 @@ function install_pkgs_list(){
 
     # pulseaudio
     pkgs="$pkgs pavucontrol"
+
+    # radio
+    pkgs="$pkgs gqrx"
 }
 
 function post_install_hook()

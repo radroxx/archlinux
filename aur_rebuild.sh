@@ -13,6 +13,7 @@ else
     $RUN /usr/bin/git config --global init.defaultBranch master
 fi
 
+echo "run string: $RUN"
 cat <<EOF | tr "@" "$" | $RUN /usr/bin/sh
 
 mkdir @{HOME}
@@ -57,8 +58,9 @@ build openlens-bin
 build superproductivity-bin
 build yandex-browser
 build monokle-bin
-#build teams-for-linux # npm error
-#build mqtt-explorer-beta # npm error
+build teams-for-linux # npm error
+exit 1
+build mqtt-explorer-beta # npm error
 
 build code-features
 build code-server
@@ -68,7 +70,6 @@ build apachedirectorystudio
 build jmeter
 build appimagetool-bin
 build zenmap
-build gqrx
 build noisetorch
 build onedrive-abraunegg
 build p7zip-gui
@@ -113,7 +114,7 @@ build argos-translate-gui
 build miniconda3
 build qflipper-git
 build gittyup-appimage
-build albert
+# build albert - заменил на болие легкое решение
 
 
 gpg --recv-keys BF38D4D02A328DFF
