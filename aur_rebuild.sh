@@ -16,7 +16,7 @@ fi
 echo "run string: $RUN"
 cat <<EOF | tr "@" "$" | $RUN /usr/bin/sh
 
-mkdir @{HOME}
+mkdir -p @{HOME}
 cd @{HOME}
 
 function build()
@@ -53,13 +53,12 @@ build wdisplays
 build vdu_controls
 
 # electron
-build skypeforlinux-bin
+#build skypeforlinux-bin
 build openlens-bin
 build superproductivity-bin
 build yandex-browser
-build monokle-bin
+#build monokle-bin
 build teams-for-linux # npm error
-exit 1
 build mqtt-explorer-beta # npm error
 
 build code-features
@@ -107,6 +106,13 @@ build python-sacremoses
 build python-stanza
 build ctranslate2
 build python-ctranslate2
+
+# install argo-translate dep
+pacman -U --noconfirm /var/cache/hooks/30_aur/aur/python-stanza*.zst
+pacman -U --noconfirm /var/cache/hooks/30_aur/aur/python-sacremoses*.zst
+pacman -U --noconfirm /var/cache/hooks/30_aur/aur/sentencepiece*.zst
+pacman -U --noconfirm /var/cache/hooks/30_aur/aur/python-sentencepiece*.zst
+
 build argos-translate
 build argos-translate-gui
 

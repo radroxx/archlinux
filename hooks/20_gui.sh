@@ -12,6 +12,9 @@ function install_pkgs_list(){
     # sway
     pkgs="$pkgs sway swaylock swaybg"
     
+    # labwc
+    pkgs="$pkgs labwc"
+    
     # local find system
     pkgs="$pkgs recoll"
     
@@ -25,4 +28,11 @@ function install_pkgs_list(){
 
     # X11
     pkgs="$pkgs xorg-server-xvfb openbox xterm"
+}
+
+
+function post_install_hook()
+{
+    cp /var/cache/hooks/20_gui/config.toml /etc/greetd/config.toml
+    systemctl enable greetd
 }
