@@ -64,6 +64,10 @@ build mqtt-explorer-beta # npm error
 build code-features
 build code-server
 
+# AI
+build cursor-bin
+build warp-terminal-bin
+
 # tools
 build apachedirectorystudio
 build jmeter

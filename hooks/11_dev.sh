@@ -125,6 +125,9 @@ function install_pkgs_list()
 
     #code_pkgs += minamarkham.yonce-theme
 
+    # AI extension
+    pkgs="$pkgs ollama ollama-cuda ollama-rocm"
+    vs_code_pkgs="$vs_code_pkgs saoudrizwan.claude-dev"
 }
 
 function post_install_hook()
